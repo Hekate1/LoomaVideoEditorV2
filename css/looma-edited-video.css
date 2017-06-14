@@ -68,6 +68,10 @@ span.hint {
 	z-index:100;
 }
 
+#activityName {
+	width: inherit;
+}
+
 /********** Query Bar (search, filter, results) ************/
 #querybar {
 
@@ -211,6 +215,11 @@ input {
 	margin-top: 0px;
 	/*margin-right: 2%;*/
 	width: 80px;
+}
+
+#select_video {
+	position: relative;
+	margin: 0 auto;
 }
 
 .filter_label p, .filter_label {
@@ -391,6 +400,25 @@ li:hover {
 
 
 /************* Preview module ***************/
+
+#vidpanel {
+    overflow-y:hidden;
+    overflow-x:hidden;
+    width: 70vw;
+    max-width: 70vw;
+    min-height: 60vh;
+    max-height: 60vh;
+    background: #fff;
+    position: relative;
+    float: right;
+    /*position: relative;
+    float: right;*/
+    /*border-radius:15px;*/
+    vertical-align:top;
+    z-index: 1;
+    margin: 0 1vh 1vh 0;
+    box-shadow: 0px 0px 25px #C4C4C4;
+}
 
 #previewpanel {
     overflow-y:hidden;
