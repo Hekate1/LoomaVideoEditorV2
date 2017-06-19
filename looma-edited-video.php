@@ -41,11 +41,11 @@
                     <span class="hint">Search Results</span>
                     </div>
                 </div>
-                <!--<div id= "vidpanel">-->
+                <div id= "vidpanel">
                     <div id= "previewpanel">
                         <span class="hint">Preview Area</span>
                     </div>
-                <!--</div>-->
+                </div>
 
                 <div id = "timeline">
                     <div class="timelineEntire" id="timelineDisplay">

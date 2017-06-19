@@ -18,6 +18,9 @@ Revision: Looma 2.4
 var homedirectory = "../";
 var $details;
 var vid_selected = false;
+var timeline_times = [];
+var timeline_id = [];
+var id_counter = 0;
 
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
@@ -64,15 +67,17 @@ window.onload = function () {
     
     $('#innerResultsDiv'           ).on('click', '.add',        function() {
         if(vid_selected == false) {
-            
             vid_selected = true;
-            $('#search').empty();
-            $('#titleDiv').empty();
-            initializeDOM();
+            $('#del_video').remove();
+            $('#del_label').remove();
+            $('#del_div').remove();
+            $('#div_search').show();
+            $('#div_filetypes').show();
+            $('#clear_button').show();
             setname((($(this).closest('.activityDiv')).data('mongo').dn) + " Edited");
-            preview_result($(this).closest('.activityDiv'));
-            $("#innerResultsMenu").empty();
-            $("#innerResultsDiv").empty();
+            display_video($(this).closest('.activityDiv'));
+            clearFilter();
+            
         }
         else {
             insertTimelineElement($(this).closest('.activityDiv'));
@@ -99,7 +104,7 @@ var loginname = LOOMA.loggedIn();
 
     //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
-/*  callback functions expected by looma-filecommands.js:
+//callback functions expected by looma-filecommands.js:
 callbacks ['clear'] = lessonclear;
 callbacks ['save']  = lessonsave;
 callbacks ['savetemplate']  = lessontemplatesave;
@@ -109,14 +114,14 @@ callbacks ['modified'] = lessonmodified;
 callbacks ['showsearchitems'] = lessonshowsearchitems;
 callbacks ['checkpoint'] = lessoncheckpoint;
 callbacks ['undocheckpoint'] = lessonundocheckpoint;
-*/
+
 
 /*  variable assignments expected by looma-filecommands.js:  */
 currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
-currentcollection = 'lesson'; //currentcollection is defined in looma-filecommands.js and is used there
-currentfiletype = 'lesson';   //currentfiletype   is defined in looma-filecommands.js and is used there
+currentcollection = 'edited_videos'; //currentcollection is defined in looma-filecommands.js and is used there
+currentfiletype = 'evi';   //currentfiletype   is defined in looma-filecommands.js and is used there
 
-$('#search-form  #collection').val('lesson');
+$('#search-form  #collection').val('edited_videos');
 
 function lessonshowsearchitems() {
                     $('#lesson-chk').show();
@@ -147,12 +152,17 @@ function lessonpack (html) { // pack the timeline into an array of collection/id
     var packitem;
     var packarray = [];
 
-    //change below pack code to add an ordering INDEX
+    packitem = {};
+    packitem.collection = $('#master_video').data('collection');
+    packitem.id = $('#master_video').data('id');
+    packarray.push(packitem);
 
+    //change below pack code to add an ordering INDEX
     $(html).each(function() {
             packitem = {};  //make a new object, unlinking the references already pushed into packarray
             packitem.collection = $(this).data('collection');
             packitem.id         = $(this).data('id');
+            packitem.time       = $(this).data('time');
             packarray.push(packitem);
         });
 
@@ -185,18 +195,18 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
           );
     });
 
-    makesortable();
+    //makesortable();
 
 }; //end lessonunpack()
 
 function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response));};
 
 function lessonsave(name) {
-    savefile(name, 'lesson', 'lesson', lessonpack($timeline.html()), true);
+    savefile(name, 'edited_videos', 'evi', lessonpack($timeline.html()), true);
 }; //end lessonsave()
 
 function lessontemplatesave(name) {
-    savefile(name, 'lesson', 'lesson' + '-template', lessonpack($timeline.html()), false);
+    savefile(name, 'edited_videos', 'evi' + '-template', lessonpack($timeline.html()), false);
 }; //end lessontemplatesave()
 
 // end FILE COMMANDS stuff
@@ -250,7 +260,7 @@ function lessontemplatesave(name) {
   //
   // $( "#timelineDisplay" ).sortable({disabled: true});
   //
-        makesortable(); //makes the timeline sortable
+        //makesortable(); //makes the timeline sortable
 
 };  //end window.onload()
 
@@ -288,6 +298,8 @@ var changeCollection = function() {
 var clearFilter = function() {
      console.log('clearFilter');
 
+   $('#previewpanel').hide();
+     
    if ($('#collection').val() == 'activities') {
          $('#searchString').val("");
          $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
@@ -305,12 +317,15 @@ var clearFilter = function() {
 
 var isFilterSet = function() {
     var set = false;
-
     if ($('#collection').val() == 'activities') {
-         if ($('#searchString').val()) set = true;
+        if ($('#searchString').val()) {
+          set = true;
+        }
 
-         $(".filter_checkbox").each(function() {
-            if (this.checked) set = true;
+        $(".filter_checkbox").each(function() {
+          if (this.checked) { 
+            set = true;
+          }
          });
     } else //collection=='chapters'
     {
@@ -338,7 +353,7 @@ function displayResults(results) {
 
       displaySearchResults(result_array);
 
-      makedraggable();  //not working for now
+      //makedraggable();  //not working for now
 
      }; //end displayresults()
 
@@ -637,6 +652,7 @@ var createActivityDiv = function(activity) {
                 $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
                 $(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
                 $(activityDiv).attr("data-type", item['ft']);
+                $(activityDiv).attr("data-time", 0);
 
                 item.collection = (item.ft == 'chapter')?'chapters':'activities';
                 $.data(activityDiv, 'mongo', item);  //save the whole mongo document ("item") in the DOM element
@@ -733,9 +749,62 @@ var createActivityDiv = function(activity) {
 /////////////////////////// PREVIEW ///////////////////////////
 ///////////////////////////////////////////////////////////////
 
+var display_video = function(item) {
+
+    $('vidpanel').append($("<p/>", {html : "Loading preview..."}));
+
+    var collection = $(item).attr('data-collection');
+    var filetype = $(item).data('type');
+    var filename = $(item).data('mongo').fn;
+    var $mongo = $(item).data('mongo');
+    var filepath;
+    if ('fp' in $mongo) filepath = $mongo.fp;
+
+        //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
+
+    var idExtractArray = extractItemId($(item).data('mongo'));
+
+    if (collection == "activities") {
+
+        if(filetype == "mp4" || filetype == "video" || filetype == "mov" || filetype == "m4v" || filetype == "mp5") {
+            if (!filepath) filepath = '../content/videos/';
+            document.querySelector('#vidpanel').innerHTML +=
+
+    //      '<video controls> <source src="' + homedirectory +
+    //               'content/videos/' + filename + '" type="video/mp4"> </video>';
+
+
+              // '<div id="video-player">' +
+                    '<div id="video-area">' +
+                        '<div id="fullscreen">' +
+                            '<video id="master_video">' +
+                                '<source id="video-source" src="' +
+                                       filepath + filename + '" type="video/mp4">' +
+                            '</video>' +
+                    '</div></div></div>' +
+                '<div id="title-area"><h3 id="title"></h3></div>' +
+                '<div id="media-controls">' +
+
+                    //'<button id="fullscreen-playpause"></button>' +
+                    '<div id="time" class="title master_time">0:00</div>' +
+                    '<button type="button" class="play-pause"></button>' +
+                    '<input type="range" class="video seek-bar" value="0" style="display:inline-block"><br>' +
+                    '<button type="button" class="mute"></button>' +
+                    '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
+                '</div>';
+
+            attachMediaControls();  //hook up event listeners to the audio and video HTML
+
+            $('#master_video').attr('data-collection', collection);
+            $('#master_video').attr('data-id', $(item).attr('data-id'));
+        }
+    }
+}   
+
+
 // When you click the preview button
 var preview_result = function(item) {
-
+    $('#previewpanel').show();
     $('#previewpanel').empty().append($("<p/>", {html : "Loading preview..."}));
 
     var collection = $(item).attr('data-collection');
@@ -816,8 +885,9 @@ var preview_result = function(item) {
 
         }
         // Pictures
-        else if(filetype=="jpg" || filetype=="gif" || filetype=="png") {
+        else if(filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
             if (!filepath) filepath = '../content/pictures/';
+            console.log(filepath + " " + filename);
             document.querySelector("div#previewpanel").innerHTML = '<img src="' +
                                  filepath +
                                  filename + '"id="displayImage">';
@@ -871,17 +941,72 @@ function insertTimelineElement(source) {
         var $dest = $(source).clone(true).off(); // clone(true) to retain all DATA for the element
                                                  //NOTE: crucial to "off()" event handlers,
                                                  //or the new element will still be linked to the old
+
         $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
 
  //  ?? this next stmt needed??
         $dest.addClass("ui-sortable-handle");
- //
-        $dest.appendTo("#timelineDisplay");
+
+        $dest.attr("data-time", $('.master_time').html());
+        var new_id = id_counter;
+        $dest.attr("id", new_id);
+        id_counter += 1;
+
+        var timeString = $($dest.prop('outerHTML')).data('time');
+        var time = 0
+        if(timeString.length > 6) 
+        {
+          //ADDDDDDDDDDDDDD THHHEEEEEEEEE SSSSSSSTTTTTTTUUUUUUUUFFFFFFFFF HHHHHHHHEEEEEEEEEERRRRRRRRRRRREEEEEEEEEEE
+        }
+        else 
+        {
+          time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
+        }
+        var index = 0;
+        while(index < timeline_times.length && time > timeline_times[index]) 
+        {
+          index += 1;
+        }
+        if(index == timeline_times.length) 
+        {
+          timeline_times.push(time);
+          timeline_id.push(new_id)
+        }
+        else 
+        {
+          var backwards_index = timeline_times.length - 1;
+          while(index <= backwards_index)
+          {
+            if(backwards_index == timeline_times.length - 1)
+            {
+              timeline_times.push(timeline_times[backwards_index]);
+              timeline_id.push(timeline_id[backwards_index]);
+            }
+            else
+            {
+              timeline_times[backwards_index] = timeline_times[backwards_index - 1];
+              timeline_id[backwards_index] = timeline_id[backwards_index - 1];
+            }
+            backwards_index -= 1;  
+          }
+          timeline_times[index] = time;
+          timeline_id[index] = new_id.toString();
+        }
+
+        if(index == timeline_times.length - 1)
+        {
+          $dest.appendTo("#timelineDisplay");
+        }
+        else 
+        {
+          console.log('#' + timeline_id[index + 1])
+          $dest.insertBefore($('#' + timeline_id[index + 1]));  
+        }
 
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling
         $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 4 ) }, 100);
 
-        refreshsortable();  //TIMELINE elements can be drag'n'dropped
+        //refreshsortable();  //TIMELINE elements can be drag'n'dropped
 
 }; //end insertTimelineElement()
 
@@ -896,7 +1021,7 @@ var removeTimelineElement = function(elem) {
 };
 
 
-/////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
+/*/////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 var makesortable = function() {
     //$('timelineDisplay').sortable( "destroy" ); //remove previous sortable state
     $("#timelineDisplay").sortable({
@@ -942,7 +1067,7 @@ function makedraggable() {
                 }
               }
         });
-}; //end makedraggable()
+}; //end makedraggable()*/
 
 var initializeDOM = function() {
 
@@ -1234,13 +1359,13 @@ var initializeDOM = function() {
 }; // end initializeDOM()
 
 var firstTimeVideoHTMLDeletion = function() {
-    $('#div_search').empty();
-    $('#div_filetypes').empty();
-    $('#clear_button').remove();
+    $('#div_search').hide();
+    $('#div_filetypes').hide();
+    $('#clear_button').hide();
 
     $("<input/>", {
         type : "checkbox",
-        id : "ft_video",
+        id : "del_video",
         value : "Video",
         name : "type[]",
         checked : true,
@@ -1248,16 +1373,17 @@ var firstTimeVideoHTMLDeletion = function() {
     }).appendTo("#div_categories");
     $("<label/>", {
         class : "filter_label",
+        id : "del_label",
         for : "ft_video",
         style: "color:#00cc00;",
         html : "Video"
     }).appendTo("#div_categories");
 
     $("<div/>", {
-            id : "instruc_div",
+            id : "del_div",
         }).appendTo("#search");
 
-    $("#instruc_div").html("Please select a video to edit");
+    $("#del_div").html("Please select a video to edit");
 };
 
 

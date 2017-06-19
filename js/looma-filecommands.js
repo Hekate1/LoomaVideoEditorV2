@@ -113,7 +113,12 @@ function savefile(name, collection, filetype, data, activityFlag) {
 
                  function(response) {
                     callbacks['checkpoint']();
-                    if (response['_id']) console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                    if (response['_id']) {
+                       console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                    }
+                    else {
+                      console.log("Didn't work?");
+                    }
                  },
                  'json'
               );
