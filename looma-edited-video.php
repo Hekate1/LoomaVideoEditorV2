@@ -47,7 +47,7 @@
                     </div>
                 </div>
 
-                <div id = "timeline">
+                <div id="timeline">
                     <div class="timelineEntire" id="timelineDisplay">
                     <span class="hint">Timeline</span>
                     </div>
@@ -55,12 +55,18 @@
             </div>
         </div>
 
+        <div id="textdiv">
+            <iframe id="textframe" src="./looma-text-frame.php" allowTransparency="true"> </iframe>
+        </div>
+
 <?php   include ('includes/js-includes.php');
 ?>
-        <script src="js/jquery-ui.min.js">  </script>
-        <script src="js/jquery.hotkeys.js"> </script>
-        <script src="js/tether.min.js">  </script>
-        <script src="js/bootstrap.min.js">  </script>
+
+        <script src="js/jquery-ui.min.js"></script>
+        <script src="js/jquery.hotkeys.js"></script>
+        <script src="js/tether.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        
 
 <?php   include ('includes/looma-filecommands.php');
         include ('includes/looma-search.php');

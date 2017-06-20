@@ -22,6 +22,8 @@ var $details;
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
 
+    $('#show_text').show();
+
     initializeDOM(); // fills in DOM elements - could be done in static HTML in the PHP file
 
     $('#clear_button').click(clearFilter);

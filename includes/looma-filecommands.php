@@ -24,6 +24,7 @@ Description:  popup SEARCH panel for Looma pages
             <button class="dropdown-item file-cmd" id="saveas">Save As</button><br>
             <button class="dropdown-item file-cmd" id="rename">Rename</button><br>
             <button class="dropdown-item file-cmd" id="delete">Delete</button><br>
+            <button class="dropdown-item file-cmd" id="show_text">New Text File</button><br>
 
             <div class="dropdown-divider"></div><br>
 

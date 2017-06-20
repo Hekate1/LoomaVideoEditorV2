@@ -1,0 +1,67 @@
+/*
+LOOMA css file
+Filename: xxx.css
+Description:
+Associated code files:
+Programmer name:
+Email:
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:
+Revision: Looma 2.0.x
+
+Comments:
+*/
+
+body {
+    color:black;
+    background-color: transparent;
+}
+
+.no-js {
+    background-color: transparent;
+}
+
+.admin {
+    display:none;
+}
+.btn-toolbar {
+    text-align:center;
+    display:inline-block;
+    color:black;
+}
+
+.container {
+    margin:0 auto;
+}
+
+#main-container-horizontal {
+    top: 10vh;
+}
+
+#title {
+    position: absolute;
+    /*top: 20vh;*/
+    right: 70vw;
+    width: 13vw;
+    height: 8vh;
+    float:left;
+    border:black;
+    color:black;
+    background-color:white;
+    border-radius:2px;
+}
+
+
+#editor {
+    height:60vh;
+    width:60vw;
+    margin:0 auto;
+    overflow:hidden;
+    color:black;
+}
+
+#commands {
+    top: 10vh;
+    left: 70vw;
+    right: auto;
+}

@@ -46,7 +46,8 @@ var callbacks = {
     modified:        doNothing,
     checkpoint:      doNothing,
     showsearchitems: doNothing,
-    undocheckpoint:  doNothing
+    undocheckpoint:  doNothing,
+    quit:            quit
 };
 
 function doNothing(){return;};  //not actually called
@@ -87,7 +88,7 @@ function savework(name, collection, filetype) {
                                             setname(savename);
                                             },
                         function(){
-                            //callbacks['undocheckpoint']();
+                            callbacks['clear']();
                             return;},
                         false);
            }
@@ -177,6 +178,11 @@ function openfile(openname, collection, filetype) {
               'json'
             );
 };  // end OPENFILE()
+
+function  quit() {
+    if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
+    else window.history.back();  //race condition? savework() AJAX may not run??
+};
 
 
 
@@ -312,6 +318,15 @@ $(document).ready(function ()
                     false);
          });
 
+    $('#show_text').click(function() 
+      {
+        console.log("FILE COMMANDS: clicked new text file");
+        $('#textdiv').show();
+        LOOMA.makeTransparent($('#main-container-horizontal'));
+        LOOMA.makeTransparent($('#commands'));    
+        $('#textdiv').focus();
+      });
+
 
 
    /*   TEMPLATE OPERATIONS    */
@@ -398,8 +413,7 @@ $(document).ready(function ()
      $('#quit').click(function()
          {
            console.log("FILE COMMANDS: clicked quit");
-           if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
-           else window.history.back();  //race condition? savework() AJAX may not run??
+           callbacks['quit']();
          });
 
 

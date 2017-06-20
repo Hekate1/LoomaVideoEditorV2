@@ -1,11 +1,10 @@
 /*
 LOOMA javascript file
-Filename: looma-lesson-plan.js
-Description: version 1 [SCU, Spring 2016]
-             version 2 [skip, Fall 2016]
-Programmer name: SCU
+Filename: looma-edited-video.js
+Programmer name: Connor Kennedy
+Adapted From: looma-lesson-plan.js Summer 2017
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: version 1:spring 2016, version 2: Nov 16
+Date: Summer 2017
 Revision: Looma 2.4
  */
 
@@ -25,6 +24,8 @@ var id_counter = 0;
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
+
+    $('#show_text').show();
 
     initializeDOM(); // fills in DOM elements - could be done in static HTML in the PHP file
     firstTimeVideoHTMLDeletion();

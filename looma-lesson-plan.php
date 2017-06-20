@@ -54,6 +54,10 @@
             </div>
         </div>
 
+        <div id="textdiv">
+            <iframe id="textframe" src="./looma-text-frame.php" allowTransparency="true"> </iframe>
+        </div>
+
 <?php   include ('includes/js-includes.php');
 ?>
         <script src="js/jquery-ui.min.js">  </script>

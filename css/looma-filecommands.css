@@ -23,3 +23,7 @@
     color: #000;
     width: 100%;
 }
+
+#show_text {
+    display: none;
+}
