@@ -49,37 +49,33 @@ Usage: 	<button  id="testvideo"
          if (!file_exists("../content/edited videos/")) { mkdir("../content/edited videos/", 0777, true); };
 
 //*************** new init code - SKIP*******
-        if (isset($_REQUEST['id'])) {  //id is set, being called with the id of an existing edited video
-            $id = $_REQUEST['id'];
-            $dn = $_REQUEST['dn'];
-            $filepath = $_REQUEST['fp'];
-            $filename = $_REQUEST['fn'];
+       
+        $id = $_REQUEST['id'];
+        $dn = $_REQUEST['dn'];
 
+        
+        //fetch the JSON descriptor of this edited video from mongo
+        $query =      array('_id' => new MongoID($id));
+        $projection = array('_id' => 0, 'data' => 1);
+        $doc = $edited_videos_collection->findOne($query, $projection);
+        $data = $doc['data'];
+        $masterVideo = array_splice($data, 0, 1);
+        
+        $masterVideo = $masterVideo[0];
 
-           //fetch the JSON descriptor of this edited video from mongo
-           $query =      array('_id' => new MongoID($id));
-           $projection = array('_id' => 0, 'JSON' => 1);
-           $doc = $edited_videos_collection->findOne($query, $projection);
-           $json = $doc['JSON'];
+        $vidQuery = array('_id' => new MongoID($masterVideo['id']));
+        $vid = $activities_collection->findOne($vidQuery);
 
-        }
-        else  //called with no 'id' means the fp/fn is an unedited video file
-        {
-            $dn =       (isset($_REQUEST['dn']) ? $_REQUEST['dn'] : "");
-            $filepath = (isset($_REQUEST['fp']) ? $_REQUEST['fp'] : "");
-            $filename = (isset($_REQUEST['fn']) ? $_REQUEST['fn'] : "");
-            $id = null;
-            $json = "null";
-        }
+        $vidFN = $vid['fn'];
 
-        $thumbFile = $filepath . thumbnail($filename);
-
+        $filepath = "../content/videos/";
+        $thumbFile = $filepath . thumbnail($vidFN);
 ?>
             <script>
-                var commands =     <?php echo $json;            ?>;
+                var commands =    <?php print json_encode($data);?>;
                 var displayName = "<?php echo addslashes($dn);  ?>";
                 var videoPath =   "<?php echo $filepath;        ?>";
-                var vn =          "<?php echo $filename;        ?>";
+                var vn =          "<?php echo $vidFN;        ?>";
                 var thumbFile =   <?php echo json_encode($thumbFile); ?>;
                 var fn =          "<?php echo $dn;              ?>";
                 console.log('video editor opening - ' + fn);
@@ -89,8 +85,8 @@ Usage: 	<button  id="testvideo"
 				<div id="video-player">
 					<div id="video-area">
 						<video id="video">
-							<?php echo 'poster="' . $filepath . thumbnail($filename) . '">'; ?>
-								<?php echo '<source src="' . $filepath . $filename . '"type="video/mp4">' ?>
+							<?php echo 'poster="' . $filepath . thumbnail($vidFN) . '">'; ?>
+								<?php echo '<source src="' . $filepath . $vidFN . '"type="video/mp4">' ?>
 						</video>
 						<div id="text-box-area">
                             <form class="media hidden_button" id="text-box">
@@ -195,10 +191,10 @@ Usage: 	<button  id="testvideo"
                     </button>
 
                     <!-- BUTTON for EDIT the current video or evi -->
-                    <button type ="button" class="media" id="edit">
+                    <!--<button type ="button" class="media" id="edit">
                          <img src="images/edit-icon-below.png" alt="edit-icon">
-                         <?php tooltip("Edit")?>
-                    </button>
+                         <?php //tooltip("Edit")?>
+                    </button>-->
 
       <!--              <div id="login-div">
                         <button type="button" class="media" id="login" style="display:none;">
@@ -258,32 +254,32 @@ Usage: 	<button  id="testvideo"
 
                 <!-- the 3 DIVs below contain buttons for all media files that can be inserted into an edited-video
                      only populated if the user is logged in  -->
-                <div id="image-previews">
+                <!--<<div id="image-previews">-->
                     <!-- Opens pictures folder when you want to select an image -->
-					<?php if (loggedIn()) {
+					<!--<?php /*if (loggedIn()) {
                         $folder = "pictures";
                        include ('includes/looma-edited-video-fileviewer.php');
                         };
-                    ?>
+                    */?>
 				</div>
 
-				<div id="pdf-previews">
+				<div id="pdf-previews">-->
 				    <!-- Opens the pdfs folder when you want to select a pdf-->
-					<?php if (loggedIn()) {
+					<!--<?php/* if (loggedIn()) {
                         $folder = "pdfs";
                         include ('includes/looma-edited-video-fileviewer.php');
                         };
-                    ?>
+                    */?>
 				</div>
 
-				<div id="video-previews">
+				<div id="video-previews">-->
                     <!-- Opens the videos folder when you want to select a video -->
-					<?php if (loggedIn()) {
+					<!--<?php/* if (loggedIn()) {
                         $folder = "videos";
                        include ('includes/looma-edited-video-fileviewer.php');
                         };
-                    ?>
-				</div>
+                    */?>
+				</div>-->
 
 			</div> <!-- End of main container -->
             <?php include ('includes/toolbar.php'); ?>
@@ -292,4 +288,4 @@ Usage: 	<button  id="testvideo"
             <script src = "js/jquery.min.js">          </script>      <!-- jQuery -->
             <script src = "js/looma-utilities.js"> </script>
             <script src = "js/looma-screenfull.js"></script>
-            <script src = "js/looma-edited-video.js"></script>
+            <script src = "js/looma-edited-video-old.js"></script>

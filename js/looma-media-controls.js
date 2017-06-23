@@ -25,13 +25,20 @@ Revision: Looma 2.4
 
 
 
-function attachMediaControls () {
+function attachMediaControls (myMedia) {
 
-          // media
-          audio = document.getElementById("audio");
-          video = document.getElementById("video");
+          if(myMedia) {
+            media = myMedia;
+          }
+          else {
+            // media
+            audio = document.getElementById("audio");
+            video = document.getElementById("video");
 
-          media = (audio)?audio:video;
+            media = (audio)?audio:video;
+          }
+          
+          console.log(media);
 
           // Buttons
           $play = $('.play-pause');

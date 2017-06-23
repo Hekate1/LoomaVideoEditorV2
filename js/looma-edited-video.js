@@ -37,7 +37,6 @@ window.onload = function () {
     $('.chapterFilter').prop('disabled', true);
     $('.mediaFilter').prop('disabled',   false);
 
-
     $("#dropdown_grade, #dropdown_subject").change( function(){
         $('#div_chapter').hide();
 
@@ -262,6 +261,9 @@ function lessontemplatesave(name) {
   // $( "#timelineDisplay" ).sortable({disabled: true});
   //
         //makesortable(); //makes the timeline sortable
+
+    //Must check box AFTER clear filter has happened
+    $('#del_video').prop("checked", true);
 
 };  //end window.onload()
 
@@ -653,7 +655,6 @@ var createActivityDiv = function(activity) {
                 $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
                 $(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
                 $(activityDiv).attr("data-type", item['ft']);
-                $(activityDiv).attr("data-time", 0);
 
                 item.collection = (item.ft == 'chapter')?'chapters':'activities';
                 $.data(activityDiv, 'mongo', item);  //save the whole mongo document ("item") in the DOM element
@@ -794,7 +795,7 @@ var display_video = function(item) {
                     '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
                 '</div>';
 
-            attachMediaControls();  //hook up event listeners to the audio and video HTML
+            attachMediaControls(document.getElementById("master_video"));  //hook up event listeners to the audio and video HTML
 
             $('#master_video').attr('data-collection', collection);
             $('#master_video').attr('data-id', $(item).attr('data-id'));
@@ -948,26 +949,31 @@ function insertTimelineElement(source) {
  //  ?? this next stmt needed??
         $dest.addClass("ui-sortable-handle");
 
-        $dest.attr("data-time", $('.master_time').html());
-        var new_id = id_counter;
+        //$dest.attr("data-time", $('.master_time').html());
+        var new_id = 't' + id_counter;
         $dest.attr("id", new_id);
         id_counter += 1;
 
-        var timeString = $($dest.prop('outerHTML')).data('time');
+        var timeString = $('.master_time').html();
         var time = 0
         if(timeString.length > 6) 
         {
-          //ADDDDDDDDDDDDDD THHHEEEEEEEEE SSSSSSSTTTTTTTUUUUUUUUFFFFFFFFF HHHHHHHHEEEEEEEEEERRRRRRRRRRRREEEEEEEEEEE
+          time = (parseInt(timeString) * (60*60)) + (parseInt(timeString.substring(timeString.length - 4)) * 60) + parseInt(timeString.substring(timeString.length - 2));
         }
         else 
         {
+          console.log(timeString);
           time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
         }
+
+        $dest.attr("data-time", time);
+
         var index = 0;
-        while(index < timeline_times.length && time > timeline_times[index]) 
+        while(index < timeline_times.length && time >= timeline_times[index]) 
         {
           index += 1;
         }
+
         if(index == timeline_times.length) 
         {
           timeline_times.push(time);
@@ -991,7 +997,7 @@ function insertTimelineElement(source) {
             backwards_index -= 1;  
           }
           timeline_times[index] = time;
-          timeline_id[index] = new_id.toString();
+          timeline_id[index] = new_id;
         }
 
         if(index == timeline_times.length - 1)
@@ -1000,7 +1006,6 @@ function insertTimelineElement(source) {
         }
         else 
         {
-          console.log('#' + timeline_id[index + 1])
           $dest.insertBefore($('#' + timeline_id[index + 1]));  
         }
 
@@ -1015,6 +1020,10 @@ var removeTimelineElement = function(elem) {
   // Removing list item from timelineHolder
   //var outerDiv = this.parentNode.parentNode;
   //outerDiv.remove();    // "Remove" button is within 3 divs
+
+        var index = timeline_id.indexOf(elem.closest('.activityDiv').id);
+        timeline_id.splice(index, 1)
+        timeline_times.splice(index, 1)
 
         $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
         $(elem).closest('.activityDiv').remove();
@@ -1192,8 +1201,7 @@ var initializeDOM = function() {
             "video" :   {   id : "ft_video",     display : "Video"  },
             "audio" :   {   id : "ft_audio",     display : "Audio"   },
             "pdf" :     {   id : "ft_pdf",       display : "PDF"   },
-            "text" :    {   id : "ft_text",      display : "Text"   },
-            "looma":    {   id : "ft_looma",      display : "Looma Page"   }
+            "text" :    {   id : "ft_text",      display : "Text"   }
             // SLIDESHOW should be added
             //    "slideshow":{   id : "ft_slideshow", display : "Slide Show"   }
         };
@@ -1367,9 +1375,9 @@ var firstTimeVideoHTMLDeletion = function() {
     $("<input/>", {
         type : "checkbox",
         id : "del_video",
+        class : "filter_checkbox",
         value : "Video",
         name : "type[]",
-        checked : true,
         disabled : true
     }).appendTo("#div_categories");
     $("<label/>", {
