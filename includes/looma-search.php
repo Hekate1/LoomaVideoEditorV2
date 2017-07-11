@@ -53,6 +53,9 @@ Description:  popup SEARCH panel for Looma pages
                 <span class="typ-chk"  id="ss-chk">
                     <input type="checkbox" name="type[]" value="slideshow">slideshow</input>
                 </span>
+                <span class="typ-chk"  id="evi-chk">
+                    <input type="checkbox" name="type[]" value="edited video">edited video</input>
+                </span>
                 <hr>
            </div>
 

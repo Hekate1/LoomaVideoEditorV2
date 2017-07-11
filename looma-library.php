@@ -183,14 +183,14 @@ echo "<hr>";
              foreach ($editedVideos as $doc) {
                     echo "<td>";
                     $dn = $doc['dn'];
-                    $fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
-                    $fp = $doc['vp'];
+                    /*$fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
+                    $fp = $doc['vp'];*/
                     $ft = "evi";
                     $id = $doc['_id'];
                     //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
                                            // should just pass the mongo ID and have the player retrieve the script's full text
                      // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "", "");
+                    makeActivityButton($ft, "", "", $dn, "", "", $id, "", "", "");
                     //makeEditedVideoButton($dn, $path, $ext, $file, $json);
 
                     echo "</td>";

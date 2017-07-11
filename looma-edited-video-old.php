@@ -39,6 +39,7 @@ Usage: 	<button  id="testvideo"
 ?>
 
 <link rel="stylesheet" type="text/css" href="css/looma-video.css">
+<link rel="stylesheet" type="text/css" href="css/looma-media-controls.css">
 
 </head>
 
@@ -88,11 +89,11 @@ Usage: 	<button  id="testvideo"
 							<?php echo 'poster="' . $filepath . thumbnail($vidFN) . '">'; ?>
 								<?php echo '<source src="' . $filepath . $vidFN . '"type="video/mp4">' ?>
 						</video>
-						<div id="text-box-area">
-                            <form class="media hidden_button" id="text-box">
+						<div id="text-box-area" style="background-color: white; color: black; display: none">
+                            <!--<form class="media hidden_button" id="text-box">
 								<textarea name="comments" id="comments" placeholder="Enter text..." autofocus></textarea>
 							</form>
-							<textarea name="text-playback" id="text-playback" readonly="true"></textarea>
+							<textarea name="text-playback" id="text-playback" readonly="true"></textarea>-->
 						</div>
                         <!-- Along with text-playback ^ these divs are where the edits are added -->
 						<div id="image-area"></div>
@@ -134,16 +135,14 @@ Usage: 	<button  id="testvideo"
 
                             <div id="time" class="title">0:00</div>
 
-                            <button type="button" class="media" id="play-pause">
+                            <button type="button" class="media play-pause" id="play-pause">
                                 <?php tooltip('Play/Pause'); ?>
                             </button>
-                            <input type="range" class="video" id="seek-bar" value="0" style="display:inline-block">
-                            <br>
-                            <button type="button" class="media" id="volume">
+                            <input type="range" class="video" id="seek-bar" value="0"><br><br>
+                            <button type="button" class="media mute" id="volume">
                                 <?php tooltip('Volume') ?>
                             </button>
                             <input type="range" class="video" id="volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
-                            <br>
                 </div>
                 <div id="edit-controls">
                     <!-- All of the buttons that the user uses to edit a video -->

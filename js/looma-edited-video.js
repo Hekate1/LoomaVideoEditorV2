@@ -124,11 +124,11 @@ currentfiletype = 'evi';   //currentfiletype   is defined in looma-filecommands.
 $('#search-form  #collection').val('edited_videos');
 
 function lessonshowsearchitems() {
-                    $('#lesson-chk').show();
+                    $('#evi-chk').show();
                     // for TEXT EDIT, only show "text", clicked and disabled
-                    $('#lesson-chk input').attr('checked', true).css('opacity', 0.5);
+                    $('#evi-chk input').attr('checked', true).css('opacity', 0.5);
                     //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-                    $('#lesson-chk input').click(function() {return false;});
+                    $('#evi-chk input').click(function() {return false;});
 
 };
 
@@ -171,6 +171,7 @@ function lessonpack (html) { // pack the timeline into an array of collection/id
 
 function lessonunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
     var newDiv;
+    var timeArray = [];
 
     //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
     // also set filename, [and collection??]
@@ -180,15 +181,29 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
 
     setname(response.dn);
 
-    // need to record ID of newly opened LP so that later SAVEs can overwrite it
+    var mainVideo = response.data.splice(0, 1)[0];
 
-    $(response.data).each(function() {
+    $.post("looma-database-utilities.php",
+            {cmd: "openByID", collection: mainVideo.collection, id: mainVideo.id},
+            function(result) {
+              display_video(result, mainVideo.id);
+            },
+            'json'
+          );
+
+    $(response.data).each(function(){
+      timeArray.push(this.time);
+    });
+
+    // need to record ID of newly opened LP so that later SAVEs can overwrite it
+    $(response.data).each(function(index) {
        // retrieve each timeline element from mongo and add it to the current timeline
          newDiv = null;  //reset newDiv so previous references to it are broken
          $.post("looma-database-utilities.php",
             {cmd: "openByID", collection: this.collection, id: this.id},
             function(result) {
                 newDiv = createActivityDiv(result);
+                newDiv.firstChild.setAttribute("data-time", timeArray[index]);
                 insertTimelineElement(newDiv.firstChild);
             },
             'json'
@@ -196,7 +211,14 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     });
 
     //makesortable();
-
+    $('#del_video').remove();
+    $('#del_label').remove();
+    $('#del_div').remove();
+    $('#div_search').show();
+    $('#div_filetypes').show();
+    $('#clear_button').show();
+    clearFilter();
+    vid_selected = "true";
 }; //end lessonunpack()
 
 function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response));};
@@ -751,20 +773,33 @@ var createActivityDiv = function(activity) {
 /////////////////////////// PREVIEW ///////////////////////////
 ///////////////////////////////////////////////////////////////
 
-var display_video = function(item) {
+var display_video = function(item, id) {
+
 
     $('vidpanel').append($("<p/>", {html : "Loading preview..."}));
 
-    var collection = $(item).attr('data-collection');
-    var filetype = $(item).data('type');
-    var filename = $(item).data('mongo').fn;
-    var $mongo = $(item).data('mongo');
-    var filepath;
-    if ('fp' in $mongo) filepath = $mongo.fp;
+
+    if($(item).data('mongo'))
+    {
+      var collection = $(item).attr('data-collection');
+      var filetype = $(item).data('type');
+      var filename = $(item).data('mongo').fn;
+      var $mongo = $(item).data('mongo');
+      var filepath;
+      if ('fp' in $mongo) filepath = $mongo.fp;
+    }
+    else
+    {
+      var collection = "activities";
+      var filetype = item.ft;
+      var filename = item.fn;
+      var filepath;
+      $(item).attr('data-id', id)
+    }   
 
         //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
 
-    var idExtractArray = extractItemId($(item).data('mongo'));
+    //var idExtractArray = extractItemId($(item).data('mongo'));
 
     if (collection == "activities") {
 
@@ -797,8 +832,8 @@ var display_video = function(item) {
 
             attachMediaControls(document.getElementById("master_video"));  //hook up event listeners to the audio and video HTML
 
-            $('#master_video').attr('data-collection', collection);
-            $('#master_video').attr('data-id', $(item).attr('data-id'));
+              $('#master_video').attr('data-collection', collection);
+              $('#master_video').attr('data-id', $(item).attr('data-id'));
         }
     }
 }   
@@ -954,17 +989,26 @@ function insertTimelineElement(source) {
         $dest.attr("id", new_id);
         id_counter += 1;
 
-        var timeString = $('.master_time').html();
-        var time = 0
-        if(timeString.length > 6) 
+        var time = 0;
+
+        if(!(source.getAttribute("data-time")))
         {
-          time = (parseInt(timeString) * (60*60)) + (parseInt(timeString.substring(timeString.length - 4)) * 60) + parseInt(timeString.substring(timeString.length - 2));
+          var timeString = $('.master_time').html();
+
+          if(timeString.length > 6) 
+          {
+            time = (parseInt(timeString) * (60*60)) + (parseInt(timeString.substring(timeString.length - 4)) * 60) + parseInt(timeString.substring(timeString.length - 2));
+          }
+          else 
+          {
+            time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
+          }
         }
-        else 
+        else
         {
-          console.log(timeString);
-          time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
+          time = source.getAttribute("data-time");
         }
+
 
         $dest.attr("data-time", time);
 
