@@ -85,20 +85,22 @@ Usage: 	<button  id="testvideo"
 			<div id="main-container-horizontal">
 				<div id="video-player">
 					<div id="video-area">
-						<video id="video">
-							<?php echo 'poster="' . $filepath . thumbnail($vidFN) . '">'; ?>
-								<?php echo '<source src="' . $filepath . $vidFN . '"type="video/mp4">' ?>
-						</video>
-						<div id="text-box-area" style="background-color: white; color: black; display: none">
-                            <!--<form class="media hidden_button" id="text-box">
-								<textarea name="comments" id="comments" placeholder="Enter text..." autofocus></textarea>
-							</form>
-							<textarea name="text-playback" id="text-playback" readonly="true"></textarea>-->
-						</div>
-                        <!-- Along with text-playback ^ these divs are where the edits are added -->
-						<div id="image-area"></div>
-                        <div id="pdf-area"></div>
-                        <div id ="added-video-area"></div>
+                        <div id="fullscreen">
+    						<video id="video">
+    							<?php echo 'poster="' . $filepath . thumbnail($vidFN) . '">'; ?>
+    								<?php echo '<source src="' . $filepath . $vidFN . '"type="video/mp4">' ?>
+    						</video>
+    						<div id="text-box-area" style="background-color: white; color: black; display: none">
+                                <!--<form class="media hidden_button" id="text-box">
+    								<textarea name="comments" id="comments" placeholder="Enter text..." autofocus></textarea>
+    							</form>
+    							<textarea name="text-playback" id="text-playback" readonly="true"></textarea>-->
+    						</div>
+                            <!-- Along with text-playback ^ these divs are where the edits are added -->
+    						<div id="image-area"></div>
+                            <div id="pdf-area"></div>
+                            <div id ="added-video-area"></div>
+                        </div>
 					</div>
                     <div id="timeline-area"></div>
                     <div id="title-area">
@@ -127,6 +129,7 @@ Usage: 	<button  id="testvideo"
                         </div>
                     </div>
 				</div>
+
                 <div id="media-controls">
                             <br>
                             <button id="fullscreen-control"></button>
@@ -143,112 +146,6 @@ Usage: 	<button  id="testvideo"
                                 <?php tooltip('Volume') ?>
                             </button>
                             <input type="range" class="video" id="volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
-                </div>
-                <div id="edit-controls">
-                    <!-- All of the buttons that the user uses to edit a video -->
-                    <div id="rename-form-div">
-                        <!--Should use LOOMA.confirm instead of this custom confirm ??  -->
-                        <p> Enter a name for your new edited video. The name must be 1 to 12 characters long. </p>
-                        <p id="rename-error-prompt"> Error: The name you entered is not 1 to 12 characters long </p>
-
-                        <form id="rename-form" autocomplete="off">
-                            <input type="text" id="rename-text" autofocus />
-                        </form>
-
-                        <button type="button" class="media hidden_button" id="rename-form-submit-button">
-                            <?php keyword("Submit") ?>
-                        </button>
-                    </div>
-
-                    <div id="add-time-div">
-                        <div id="add-start-stop-time-div">
-                            <button type="button" class="media hidden_button" id="start-time">
-                                <?php keyword('Set Start Time') ?>
-                            </button>
-
-                            <button type="button" class="media hidden_button" id="stop-time">
-                                <?php keyword('Set Stop Time') ?>
-                            </button>
-                        </div>
-                        <div id="default-start-stop-time-div">
-                            <button type="button" class="media hidden_button" id="default-start-stop-time">
-                                <?php  keyword('Default'); ?>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button type="button" class="media" id="cancel">
-                        <?php keyword('Cancel') ?>
-                    </button>
-
-                    <form class="media" id="search-area" style="display: none">
-				        <input name="search" id="search-box" autofocus placeholder="Search for..."/>
-                    </form>
-
-                    <button type="button" class="media" id="delete">
-                        <?php tooltip('Delete') ?>
-                    </button>
-
-                    <!-- BUTTON for EDIT the current video or evi -->
-                    <!--<button type ="button" class="media" id="edit">
-                         <img src="images/edit-icon-below.png" alt="edit-icon">
-                         <?php //tooltip("Edit")?>
-                    </button>-->
-
-      <!--              <div id="login-div">
-                        <button type="button" class="media" id="login" style="display:none;">
-                            <?php keyword('Log In') ?>
-                        </button>
-                    </div>
-  -->
-                    <button type="button" class="media hidden_button" id="prev-frame5">
-                        &lt;&lt;&lt;
-                        <?php
-                            tooltip('Previous Frame')
-                        ?>
-                    </button>
-
-                    <button type="button" class="media hidden_button" id="prev-frame">
-                        &lt;
-                        <?php  tooltip('Previous Frame') ?>
-                    </button>
-
-                    <button type="button" class="media hidden_button" id="next-frame">
-                        &gt;
-                        <?php tooltip('Next Frame')  ?>
-                    </button>
-
-
-                    <button type="button" class="media hidden_button" id="next-frame5">
-                        &gt;&gt;&gt;
-                        <?php tooltip('Next Frame') ?>
-                    </button>
-
-                    <br>
-
-                    <button type="button" class="media hidden_button" id="rename">
-                        <?php keyword('Rename') ?>
-                    </button>
-
-                    <button type="button" class="media" id="text">
-                        <?php keyword('Text') ?>
-                    </button>
-                    <button type="button" class="media" id="image">
-                        <?php keyword('Image') ?>
-                    </button>
-                    <button type="button" class="media hidden_button" id="pdf">
-                        <?php keyword('Pdf') ?>
-                    </button>
-
-                    <button type="button" class="media hidden_button" id="video-button">
-                        <?php keyword('Video') ?>
-                    </button>
-
-                    <button type="button" class="media hidden_button" id="submit">
-                        <?php keyword('Submit') ?>
-                    </button>
-
-                    <br>
                 </div>
 
                 <!-- the 3 DIVs below contain buttons for all media files that can be inserted into an edited-video
@@ -287,4 +184,5 @@ Usage: 	<button  id="testvideo"
             <script src = "js/jquery.min.js">          </script>      <!-- jQuery -->
             <script src = "js/looma-utilities.js"> </script>
             <script src = "js/looma-screenfull.js"></script>
+            <script src = "js/looma-media-controls.js"></script>
             <script src = "js/looma-edited-video-old.js"></script>
