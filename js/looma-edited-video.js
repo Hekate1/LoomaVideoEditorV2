@@ -80,7 +80,7 @@ window.onload = function () {
             
         }
         else {
-            insertTimelineElement($(this).closest('.activityDiv'));
+            insertTimelineElement($(this).closest('.activityDiv'), false);
         }
         return false;});
 
@@ -204,7 +204,7 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
             function(result) {
                 newDiv = createActivityDiv(result);
                 newDiv.firstChild.setAttribute("data-time", timeArray[index]);
-                insertTimelineElement(newDiv.firstChild);
+                insertTimelineElement(newDiv.firstChild, true);
             },
             'json'
           );
@@ -974,7 +974,7 @@ var preview_result = function(item) {
 };  // end preview_result()
 
 
-function insertTimelineElement(source) {
+function insertTimelineElement(source, open) {
         var $dest = $(source).clone(true).off(); // clone(true) to retain all DATA for the element
                                                  //NOTE: crucial to "off()" event handlers,
                                                  //or the new element will still be linked to the old
@@ -990,8 +990,11 @@ function insertTimelineElement(source) {
         id_counter += 1;
 
         var time = 0;
-
-        if(!(source.getAttribute("data-time")))
+        if(open)
+        {
+          time = source.getAttribute("data-time");
+        }
+        else
         {
           var timeString = $('.master_time').html();
 
@@ -1003,10 +1006,6 @@ function insertTimelineElement(source) {
           {
             time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
           }
-        }
-        else
-        {
-          time = source.getAttribute("data-time");
         }
 
 
