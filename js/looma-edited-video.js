@@ -1042,6 +1042,29 @@ function insertTimelineElement(source, open) {
           timeline_times[index] = time;
           timeline_id[index] = new_id;
         }
+        var timeText;
+
+        if(open) 
+        {
+          if(time >= 3600) 
+          {
+            timeText = Math.floor(time/3600) + ":" + ((time/60)%60) + ":" + (time%3600);
+          }
+          else 
+          {
+            timeText = Math.floor(time/60) + ":" + (time%60);
+          }
+        }
+        else
+        {
+          timeText = timeString;
+        }
+
+        $("<div/>", {
+            class : "time_popup",
+        }).text(timeText).appendTo($dest);
+
+        $dest[0].className += " timelineElement";
 
         if(index == timeline_times.length - 1)
         {
@@ -1055,7 +1078,7 @@ function insertTimelineElement(source, open) {
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling
         $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 4 ) }, 100);
 
-        //refreshsortable();  //TIMELINE elements can be drag'n'dropped
+        $('.timelineElement').off().hover(function() {$('.time_popup').show();}, function() {$('.time_popup').hide();})
 
 }; //end insertTimelineElement()
 

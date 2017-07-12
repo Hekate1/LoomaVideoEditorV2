@@ -576,6 +576,16 @@ li:hover {
 	margin-right:10px;
 }
 
+.time_popup {
+	display: none;
+	height: 4vh;
+	width: 8vw;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,.2);
+	font: 20px "Comic Sans MS",serif,bold;
+	background-color: mintcream;
+	position: absolute;
+}
+
 /* ************************ OPEN! ********************/
 
 #openLogo {
