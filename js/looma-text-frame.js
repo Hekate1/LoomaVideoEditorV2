@@ -41,7 +41,6 @@ function textmodified()   { return (savedHTML !== $editor.html());};
 
 function textclear() {
        setname("");
-       currentid="";
        $editor.html("");
        savedHTML = "";
        textcheckpoint();

@@ -109,7 +109,7 @@ Description:  for Looma 2
                 <a href="looma-slideshow.php">
                     <button class="settings-control">Slideshow Editor</button>
                 </a>
-                <a href="looma-edited-video.php">
+                <a href="looma-evi-editor.php">
                     <button class="settings-control">Video Editor</button>
                 </a>
 

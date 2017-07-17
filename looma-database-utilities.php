@@ -209,7 +209,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             //end case "deleteField"
         case "save":
-            if (($collection == "text") || ($collection == "lesson") || ($collection == "edited_videos")){
+            if (($collection == "text") || ($collection == "lesson")){
 
                 $insert = array(
                     "dn"     => $_REQUEST["dn"],
@@ -219,6 +219,17 @@ if ( isset($_REQUEST["cmd"]) ) {
                     "data"   => $_REQUEST["data"]
                     );
                 saveText($dbCollection, $_REQUEST['dn'], $insert, $_REQUEST['activity']);
+            }
+            else if ($collection == "edited_videos") {
+              $insert = array(
+                    "dn"     => $_REQUEST["dn"],
+                    "ft"     => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
+                    "author" => $_COOKIE['login'],
+                    "date"   => gmdate("Y.m.d"),  //using greenwich time
+                    "data"   => $_REQUEST["data"],
+                    "thumb"  => $_REQUEST["thumb"]
+                    );
+                saveText($dbCollection, $_REQUEST['dn'], $insert, $_REQUEST['activity']);  
             }
             else if ($collection == "activities") {
                 $insert = $_REQUEST['data'];

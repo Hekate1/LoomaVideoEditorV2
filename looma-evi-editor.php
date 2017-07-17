@@ -10,7 +10,7 @@
 
     <head>
         <link rel="stylesheet" href="css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="css/looma-edited-video.css">
+        <link rel="stylesheet" type="text/css" href="css/looma-evi-editor.css">
     </head>
 
     <body>
@@ -45,6 +45,7 @@
                     <div id= "previewpanel">
                         <span class="hint">Preview Area</span>
                     </div>
+                    <button id = "clearPreview" type = "button">Clear Preview</button>
                 </div>
 
                 <div id="timeline">
@@ -72,7 +73,7 @@
         include ('includes/looma-search.php');
 ?>
        <script src="js/looma-media-controls.js"></script>
-       <script src="js/looma-edited-video.js"></script>
+       <script src="js/looma-evi-editor.js"></script>
 
     </body>
 </html>

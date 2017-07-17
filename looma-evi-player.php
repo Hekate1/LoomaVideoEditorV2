@@ -102,18 +102,18 @@ Usage: 	<button  id="testvideo"
                             <div id ="added-video-area"></div>
                         </div>
 					</div>
-                    <div id="timeline-area"></div>
+                    <!--<div id="timeline-area"></div>-->
                     <div id="title-area">
                         <div id="title-div">
                             <h3 id="title"></h3>
                         </div>
 
-                        <!-- BUTTON for OPEN new video to EDIT -->
+                        <!-- BUTTON for OPEN new video to EDIT 
                         <button type="button" class="media" id="open-videos-folder" style="display:none;">
-                            <?php keyword('New') ?>
-                        </button>
+                            <?php //skeyword('New') ?>
+                        </button>-->
 
-                        <div id="description-div">
+                        <!--<div id="description-div">
                             <p id="open-videos-folder-description">Leave current edit and go to the videos folder</p>
                             <p id="edit-description">Edit the video</p>
                             <p id="save-description">Save changes</p>
@@ -126,7 +126,7 @@ Usage: 	<button  id="testvideo"
                             <p id="image-description">Add an image to the video</p>
                             <p id="pdf-description">Add a pdf the video</p>
                             <p id="video-description">Add a video to the video</p>
-                        </div>
+                        </div>-->
                     </div>
 				</div>
 
@@ -185,4 +185,4 @@ Usage: 	<button  id="testvideo"
             <script src = "js/looma-utilities.js"> </script>
             <script src = "js/looma-screenfull.js"></script>
             <script src = "js/looma-media-controls.js"></script>
-            <script src = "js/looma-edited-video-old.js"></script>
+            <script src = "js/looma-evi-player.js"></script>

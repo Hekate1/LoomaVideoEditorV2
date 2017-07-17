@@ -68,7 +68,7 @@ playMedia : function(button) {
             //evi = edited video indicator
             //If you click on an edited video it sends the filename, location and the information
             //to looma-edited-video.php
-            window.location = 'looma-edited-video-old.php?fn=' + button.getAttribute('data-fn') +
+            window.location = 'looma-evi-player.php?fn=' + button.getAttribute('data-fn') +
             '&fp=' + button.getAttribute('data-fp') +
             '&id=' + button.getAttribute('data-id') +
             '&dn=' + button.getAttribute('data-dn');

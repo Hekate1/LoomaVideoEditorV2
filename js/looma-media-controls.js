@@ -103,7 +103,6 @@ function attachMediaControls (myMedia) {
           var value = (100 / media.duration) * media.currentTime;
           // Update the slider value
           $seekbar.val(value);
-
           $time.text(minuteSecondTime(media.currentTime));
         });
 

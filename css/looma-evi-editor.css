@@ -97,7 +97,8 @@ span.hint {
 }
 
 #searchString {
-	margin-left: 3%;
+	/*margin-left: 3%;*/
+	vertical-align: middle;
 	width:15vw;
 }
 
@@ -192,7 +193,9 @@ span.hint {
 }
 
 #search select {
-    display:inline;}
+    display:inline;
+    vertical-align: middle;
+}
 
 input {
     background-color:#f8f8f8;
@@ -226,6 +229,8 @@ input {
 	font-size:1.2em;
 	text-align:left;
 	padding-right: 6px;
+	vertical-align: middle;
+	margin-left: 1vw;
 	/*line-height:6px;*/
 }
 
@@ -250,6 +255,21 @@ input {
 
 .preview {
     float:right;
+}
+
+#del_video {
+	margin-left: 1vw;
+	vertical-align: middle;
+}
+
+#del_label {
+	margin: .25vw;
+	vertical-align: middle;
+}
+
+#del_div {
+	vertical-align: middle;
+	font-size: xx-large;
 }
 
 
@@ -487,6 +507,13 @@ li:hover {
     max-height:60vh;
 }
 
+#clearPreview {
+	display: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
 /************* Timeline module ***************/
 
 #timeline {
@@ -522,6 +549,7 @@ li:hover {
     width:15vw;
     min-height: 20vh;
     float:left;
+    position: relative;
 }
 
 #timelineDisplay .textdiv{
