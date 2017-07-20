@@ -21,6 +21,7 @@ var timeline_times = [];
 var timeline_id = [];
 var id_counter = 0;
 var mainThumbSrc = "";
+var openClick = false;
 
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
@@ -85,8 +86,6 @@ window.onload = function () {
 
             setname((($(this).closest('.activityDiv')).data('mongo').dn) + " Edited");
             display_video($(this).closest('.activityDiv'));
-            
-
         }
         else {
             insertTimelineElement($(this).closest('.activityDiv'), false);
@@ -117,13 +116,13 @@ var loginname = LOOMA.loggedIn();
     //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
 //callback functions expected by looma-filecommands.js:
-callbacks ['clear'] = eviclear;
+callbacks ['clear'] = evinew;
 callbacks ['save']  = evisave;
 callbacks ['savetemplate']  = evitemplatesave;
 //callbacks ['open']  = eviopen;
 callbacks ['display'] = evidisplay;
 callbacks ['modified'] = evimodified;
-callbacks ['showsearchitems'] = evishowsearchitems;
+callbacks ['showsearchitems'] = evishowsearchitemsopen;
 callbacks ['checkpoint'] = evicheckpoint;
 callbacks ['undocheckpoint'] = eviundocheckpoint;
 
@@ -135,12 +134,25 @@ currentfiletype = 'evi';   //currentfiletype   is defined in looma-filecommands.
 
 $('#search-form  #collection').val('edited_videos');
 
-function evishowsearchitems() {
-                    $('#evi-chk').show();
-                    // for TEXT EDIT, only show "text", clicked and disabled
-                    $('#evi-chk input').attr('checked', true).css('opacity', 0.5);
-                    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-                    $('#evi-chk input').click(function() {return false;});
+function evishowsearchitemsopen() {
+    $('#search-form  #collection').val('edited_videos');
+
+    $('#evi-chk').show();
+    // for TEXT EDIT, only show "text", clicked and disabled
+    $('#evi-chk input').attr('checked', true).css('opacity', 0.5);
+    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
+    $('#evi-chk input').click(function() {return false;});
+
+};
+
+function evishowsearchitemsnew() {
+    $('#search-form  #collection').val('activities');
+
+    $('#vid-chk').show();
+    // for TEXT EDIT, only show "text", clicked and disabled
+    $('#vid-chk input').attr('checked', true).css('opacity', 0.5);
+    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
+    $('#vid-chk input').click(function() {return false;});
 
 };
 
@@ -148,6 +160,53 @@ function evicheckpoint() {         savedTimeline =   $timeline.html(); };
 function eviundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
 function evimodified()   {
     return (savedTimeline !== $timeline.html());};
+
+function evinew()
+{
+    eviclear();
+
+    callbacks ['showsearchitems'] = evishowsearchitemsnew;
+
+    opensearch(true);
+
+    $('#search-results').on('click', 'button', function()
+    {
+      closesearch();
+      if ($(this).attr('id') !== 'cancel-results') //if file not found, dont call OPEN()
+        {
+            vid_selected = true;
+            $('#del_video').remove();
+            $('#del_label').remove();
+            $('#del_div').remove();
+            $('#div_search').show();
+            $('#div_filetypes').show();
+            $('#clear_button').show();
+            $('#search_label').html("Name:");
+            $('<br>').insertAfter('#searchString');
+            $('#div_categories').css("width", "25vw")
+            $('.filter_label').css("margin-left", "auto");
+
+            mainThumbSrc = $(this).find('.thumbnaildiv')[0].firstChild.src;
+            setname(this.title + " Edited");
+
+            var video_id = $(this).data('id');
+
+            $.post("looma-database-utilities.php",
+            {
+                cmd: "openByID", collection: 'activities', id: video_id},
+                function(result) {
+                display_video(result, video_id);
+            },
+            'json');
+        }
+    });
+
+    $('#cancel-search').on('click', function() {
+       closesearch();
+    });
+
+    callbacks ['showsearchitems'] = evishowsearchitemsopen;
+}
 
 function eviclear() {
 
@@ -162,15 +221,21 @@ function eviclear() {
       firstTimeVideoHTMLDeletion();
       vid_selected = false;
       $('#del_video').prop("checked", true);
+      $('#div_categories br').remove();
+      $('#div_categories').css("width", "60vw")
+      $('.filter_label').css("margin-left", "1vw");
     }
 
+    timeline_times = [];
+    timeline_id = [];
+    id_counter = 0;
     setname("");
     //currentid="";
     $timeline.empty();
     evicheckpoint();
 };
 
-eviclear();
+evinew();
 
 function evipack (html) { // pack the timeline into an array of collection/id pairs for storage
     var packitem;
@@ -201,7 +266,6 @@ function eviunpack (response) {  //unpack the array of collection/id pairs into 
     // also set filename, [and collection??]
 
     //$('#timelineDisplay').empty();
-    eviclear();
 
     setname(response.dn);
 
@@ -259,7 +323,11 @@ function eviunpack (response) {  //unpack the array of collection/id pairs into 
     $('.filter_label').css("margin-left", "auto");
 }; //end eviunpack()
 
-function evidisplay (response) {clearFilter(); $timeline.html(eviunpack(response));};
+function evidisplay (response) 
+{
+  clearFilter(); 
+  $timeline.html(eviunpack(response));
+};
 
 function evisave(name) {
     saveEviFile(name, 'edited_videos', 'evi', evipack($timeline.html()), mainThumbSrc, true);
@@ -321,7 +389,6 @@ function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {  /
                         // and returns an array of objects which are mongo documents that match the search criteria from the form
                         if(vid_selected == false) {
                             $.post( "looma-database-utilities.php",
-                                //UNHARD CODE LATER PLS***********************************************************************
                                 $( "#search" ).serialize() + "&type[]=video",
                                     function (result) {
                                         loadingmessage.remove();
@@ -838,7 +905,7 @@ var createActivityDiv = function(activity) {
 ///////////////////////////////////////////////////////////////
 
 var display_video = function(item, id) {
-
+  console.log(item)
 
     $('vidpanel').append($("<p/>", {html : "Loading preview..."}));
 
@@ -1137,7 +1204,7 @@ function insertTimelineElement(source, open) {
         }).text(timeText).appendTo($dest);
 
         $dest[0].className += " timelineElement";
-
+        console.log($dest);
         if(index == timeline_times.length - 1)
         {
           $dest.appendTo("#timelineDisplay");

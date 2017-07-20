@@ -416,6 +416,10 @@ li:hover {
 	background-color:green;
 }*/
 
+.searchTitle {
+	font-size: 1rem;
+}
+
 /************* Preview module ***************/
 
 #vidpanel {
