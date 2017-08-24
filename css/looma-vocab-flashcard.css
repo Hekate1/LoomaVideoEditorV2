@@ -1,6 +1,6 @@
 /*
-Author: Sasha Cassidy and Lily Barnett
-Description: looma-vocab-flashcard.css contains the style for looma-vocab-flashcard.php
+Author: Sasha Cassidy, Lily Barnett, and Mahir Arora
+Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard.php
 */
 
 #prev, #next {
@@ -147,6 +147,23 @@ p#wordFront {
 p#nepaliBack {
 	font-size: 7em;
 	font-weight:bold;
+}
+
+#rootWord{
+    text-align: center;
+    font-size: 4em;
+    font-weight:bolder;
+}
+
+#rwNepali{
+    text-align: center;
+    font-size: 4em;
+    font-weight:bolder;
+}
+#rwDefinition{
+    text-align: center;
+    font-size: 3em;
+    font-weight:bolder;
 }
 
 p.clickToFlip {

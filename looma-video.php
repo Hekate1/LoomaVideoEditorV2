@@ -12,6 +12,7 @@ they want to edit a video
 <?php $page_title = 'Looma Video Player';
 	  include ('includes/header.php');
       include ('includes/activity-button.php');
+      include ('includes/js-includes.php');
 
 	  /*  thumbnail() is included with activity-button.php
 	  function thumbnail ($fn) {
@@ -51,11 +52,7 @@ they want to edit a video
 				<div id="video-player">
 					<div id="video-area">
 					    <div id="fullscreen">
-    						<video id="video">
-    							<!--Gets the source of the video and the thumbnail of the video-->
-    							<?php echo 'poster="' . $filepath . thumbnail($filename) . '">'; ?>
-    								<?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
-    						</video>
+    						<?php include ('includes/looma-word-game.php'); ?>
 					    </div>
 				   </div>
 				</div>
@@ -75,19 +72,22 @@ they want to edit a video
 					<button type="button" class="media mute"><?php keyword('Volume') ?></button>
 					<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" >
 
+					<button id="testButton">Click Me!</button>
+					
 				</div>
 
 			<div id="edit-controls">
 
-					<button type="button" class="media hidden_button" id="edit">
+
+<!--					<button type="button" class="media hidden_button" id="edit">
                          <img src="images/edit-icon-below.png" alt="edit-icon">
-                         <?php tooltip("Create Edited Video")?>
+                         <?php //tooltip("Create Edited Video")?>
                     </button>
 
- <!--
+ 
                    <div id="login-div">
                         <button type="button" class="media" id="login" style="display:none;">
-                            <?php keyword('Log In') ?>
+                            <?php //keyword('Log In') ?>
                         </button>
                     </div>
 -->
@@ -97,7 +97,7 @@ they want to edit a video
 
         <!--Adds the toolbar to the video player screen-->
         <?php include ('includes/toolbar.php'); ?>
-        <?php include ('includes/js-includes.php'); ?>
+        
         <script src="js/looma-screenfull.js"></script>
         <script src="js/looma-media-controls.js"></script>          <!-- Looma Javascript -->
         <script src="js/looma-video.js"></script>          <!-- Looma Javascript -->

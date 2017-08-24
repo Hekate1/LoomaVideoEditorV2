@@ -73,10 +73,23 @@ Description:
         // add CSS to color 'visit=true' different from 'visit=false'
 
         //send GET request to chapters.php with CLASS and SUBJECT values
-        window.location = "looma-vocab-flashcard.php?class=" +
+        console.log($('#flashcards-box').prop('checked'));
+        if($('#flashcards-box').prop('checked'))
+        {
+            window.location = "looma-vocab-flashcard.php?class=" +
                             encodeURIComponent(className) +
                             "&subject=" +
                             encodeURIComponent(subjectName);
+        }
+        else
+        {
+            window.location = "looma-dictionary-game.php?class=" +
+                            encodeURIComponent(className) +
+                            "&subject=" +
+                            encodeURIComponent(subjectName);
+        }
+
+        
 
         // could use jQuery $.get here instead of window.location?
 
@@ -85,6 +98,25 @@ Description:
 
 
 $(document).ready (function() {
+    $('#flashcards-box').prop('checked', true);
+    $('#flashcards-box').prop('disabled', true);
+    $('#word-game-box').prop('checked', false);
+    $('#word-game-box').prop('disabled', false);
+
+    $('#flashcards-box').on('click', function(){
+        $('#flashcards-box').prop('checked', true);
+        $('#word-game-box').prop('checked', false);
+        $('#flashcards-box').prop('disabled', true);
+        $('#word-game-box').prop('disabled', false);
+    });
+
+    $('#word-game-box').on('click', function(){
+        $('#word-game-box').prop('checked', true);
+        $('#flashcards-box').prop('checked', false);
+        $('#word-game-box').prop('disabled', true);
+        $('#flashcards-box').prop('disabled', false);
+    });
+
     //add listeners to all CLASS buttons
     $("button.class").click(classButtonClicked);
 

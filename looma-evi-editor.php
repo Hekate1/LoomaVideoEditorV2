@@ -1,4 +1,16 @@
 <!doctype html>
+<!--
+Name: Connor, SCU
+Email: skip@stritter.com
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 7/26/17
+Adapted from: looma-lesson-plan.php
+Version: 3.0
+File: looma-evi-editor.php
+Description: Edited video creator
+-->
+
+
 <html>
     <?php $page_title = 'Looma - Video Editor';
           include ('includes/header.php');

@@ -1,11 +1,11 @@
 /*
 LOOMA javascript file
-Filename: looma-edited-video.js
-Programmer name: Connor Kennedy
+Filename: looma-evi-editor.js
+Programmer name: Connor
 Adapted From: looma-lesson-plan.js Summer 2017
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: Summer 2017
-Revision: Looma 2.4
+Date: 7/26/17
+Revision: Looma 3.0
  */
 
 'use strict';
@@ -22,6 +22,7 @@ var timeline_id = [];
 var id_counter = 0;
 var mainThumbSrc = "";
 var openClick = false;
+var controlsChanged = false;
 
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
@@ -82,7 +83,12 @@ window.onload = function () {
             $('#div_categories').css("width", "25vw")
             $('.filter_label').css("margin-left", "auto");
 
-            mainThumbSrc = $(this).closest('.activityDiv')[0].firstChild.firstChild.src;
+            var filetype = $(this).closest('.activityDiv').data('type');
+            var filename = $(this).closest('.activityDiv').data('mongo').fn;
+            var $mongo = $(this).closest('.activityDiv').data('mongo');
+            var filepath;
+            if ('fp' in $mongo) filepath = $mongo.fp;
+            mainThumbSrc = LOOMA.thumbnail(filename, filepath, filetype);
 
             setname((($(this).closest('.activityDiv')).data('mongo').dn) + " Edited");
             display_video($(this).closest('.activityDiv'));
@@ -186,17 +192,19 @@ function evinew()
             $('#div_categories').css("width", "25vw")
             $('.filter_label').css("margin-left", "auto");
 
-            mainThumbSrc = $(this).find('.thumbnaildiv')[0].firstChild.src;
             setname(this.title + " Edited");
 
             var video_id = $(this).data('id');
 
             $.post("looma-database-utilities.php",
-            {
-                cmd: "openByID", collection: 'activities', id: video_id},
-                function(result) {
-                display_video(result, video_id);
-            },
+                {
+                  cmd: "openByID", collection: 'activities', id: video_id
+                },
+                function(result) 
+                {
+                  mainThumbSrc = LOOMA.thumbnail(result.fn, result.fp, result.ft);
+                  display_video(result, video_id);
+                },
             'json');
         }
     });
@@ -247,7 +255,7 @@ function evipack (html) { // pack the timeline into an array of collection/id pa
     packarray.push(packitem);
 
     //change below pack code to add an ordering INDEX
-    $(html).each(function() {
+    $(html).each(function(index) {
             packitem = {};  //make a new object, unlinking the references already pushed into packarray
             packitem.collection = $(this).data('collection');
             packitem.id         = $(this).data('id');
@@ -274,6 +282,15 @@ function eviunpack (response) {  //unpack the array of collection/id pairs into 
     $.post("looma-database-utilities.php",
             {cmd: "openByID", collection: mainVideo.collection, id: mainVideo.id},
             function(result) {
+              if(response.thumb) 
+              {
+                mainThumbSrc = response.thumb;
+              }
+              else
+              {
+                mainThumbSrc = LOOMA.thumbnail(result.fn, result.fp, result.ft);
+              }
+              
               display_video(result, mainVideo.id);
             },
             'json'
@@ -298,15 +315,6 @@ function eviunpack (response) {  //unpack the array of collection/id pairs into 
           );
     });
 
-    if(response.thumb) 
-    {
-      mainThumbSrc = response.thumb;
-    }
-    else
-    {
-      //FIX LATER
-      mainThumbSrc = "";
-    }
 
     //makesortable();
     $('#del_video').remove();
@@ -325,7 +333,7 @@ function eviunpack (response) {  //unpack the array of collection/id pairs into 
 
 function evidisplay (response) 
 {
-  clearFilter(); 
+  eviclear(); 
   $timeline.html(eviunpack(response));
 };
 
@@ -469,6 +477,13 @@ var clearFilter = function() {
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv").empty();
     $("#previewpanel").empty();
+    if(controlsChanged)
+    {
+      attachMediaControls(document.getElementById("master_video"));
+      $('.play-pause').attr('style', 'background-image: url("images/video.png")');
+      controlsChanged = false;
+    }
+    
 }; //end clearFilter()
 
 var isFilterSet = function() {
@@ -977,6 +992,9 @@ var preview_result = function(item) {
     $('#previewpanel').show();
     $('#previewpanel').empty().append($("<p/>", {html : "Loading preview..."}));
 
+    document.getElementById('master_video').pause();
+    $('.play-pause').attr('style', 'background-image: url("images/video.png")');
+
     var collection = $(item).attr('data-collection');
     var filetype = $(item).data('type');
     var filename = $(item).data('mongo').fn;
@@ -1031,7 +1049,7 @@ var preview_result = function(item) {
                 '</div>';
 
              attachMediaControls();  //hook up event listeners to the audio and video HTML
-
+             controlsChanged = true;
         }
         else if (filetype=="pdf") {
             if (!filepath) filepath = '../content/pdfs/';
@@ -1052,7 +1070,7 @@ var preview_result = function(item) {
                                             '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
                                         '</div>';
              attachMediaControls();  //hook up event listeners to the audio and video HTML
-
+             controlsChanged = true;
         }
         // Pictures
         else if(filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
@@ -1103,7 +1121,6 @@ var preview_result = function(item) {
               );
         }
     }
-
 };  // end preview_result()
 
 
@@ -1139,13 +1156,18 @@ function insertTimelineElement(source, open) {
           {
             time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
           }
+          while(timeline_times.includes(time))
+          {
+            time += .01
+          }
+          time.toFixed(3);
         }
 
 
         $dest.attr("data-time", time);
 
         var index = 0;
-        while(index < timeline_times.length && parseInt(time) >= parseInt(timeline_times[index])) 
+        while(index < timeline_times.length && parseFloat(time) >= parseFloat(timeline_times[index])) 
         {
           index += 1;
         }
@@ -1167,8 +1189,8 @@ function insertTimelineElement(source, open) {
             }
             else
             {
-              timeline_times[backwards_index] = timeline_times[backwards_index - 1];
-              timeline_id[backwards_index] = timeline_id[backwards_index - 1];
+              timeline_times[backwards_index + 1] = timeline_times[backwards_index];
+              timeline_id[backwards_index + 1] = timeline_id[backwards_index];
             }
             backwards_index -= 1;  
           }
@@ -1179,6 +1201,7 @@ function insertTimelineElement(source, open) {
 
         if(open) 
         {
+          time = Math.floor(time);
           if(time >= 3600) 
           {
             timeText = Math.floor(time/3600) + ":" + ((time/60)%60) + ":" + (time%3600);
@@ -1204,7 +1227,7 @@ function insertTimelineElement(source, open) {
         }).text(timeText).appendTo($dest);
 
         $dest[0].className += " timelineElement";
-        console.log($dest);
+        
         if(index == timeline_times.length - 1)
         {
           $dest.appendTo("#timelineDisplay");
@@ -1239,6 +1262,13 @@ function clearPreview() {
   $('#previewpanel').hide();
   $('#previewpanel').empty();
   $('#clearPreview').hide();
+  if(controlsChanged)
+  {
+    attachMediaControls(document.getElementById("master_video"));
+    $('.play-pause').attr('style', 'background-image: url("images/video.png")');
+    controlsChanged = false;
+  }
+  
 }
 
 

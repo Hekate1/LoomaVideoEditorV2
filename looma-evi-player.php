@@ -1,35 +1,12 @@
- <!doctype html>
+<!doctype html>
 <!--
-Name: Skip, Aaron, Connor, Ryan
+Name: Connor, Skip, Aaron, Ryan
 Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2016 07
-Revision: Looma Video Editor 1.0
-File: looma-edited-video.php
-Description: Edited Video viewer page for Looma 2
-
-Usage: 	<button  id="testvideo"
-                 data-fn="A_Day_On_Earth_Edited.txt"
-                 data-fp="content/videos/"
-                 data-dn="A Day On Earth"
-				 data-id="<mongoID of the JSON commands for this edited video">
-			<img src=thumbnail
-		</button>
-
-	   And: $("button#testvideo").click(LOOMA.playMedia);
-
-	This code can be called from
-	a. clicking an 'activity button' created by looma-library.php or looma-activity.php
-	b. from looma-video.php when "edit" is clicked
-	c. in case the user enters looma-edited-video.php directly in the browser URL
-
-	In case (a) the URL hash includes "data-id=..." and
-	the id for accessing the edited video in the edited_videos collection in mongo is specified. in this case,
-	data-fp, data-fn, and data-dn are expected to be provided.
-
-	In case (b), no 'data-id' is specified, this is an unedited video and
-	the code expects data-fp, data-fn and data-dn to be provided
-
+Date: 7/26/17
+Version: 3.0
+File: looma-evi-player.php
+Description: Edited video player
 -->
 
 <?php $page_title = 'Looma Video Player';

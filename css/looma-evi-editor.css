@@ -1,12 +1,12 @@
 /*
 LOOMA css file
-Filename: looma-lesson-plan.css
-Description:
-Associated code files:
-Programmer name: SCU
+Filename: looma-evi-editor.css
+Description: Main css file for looma-evi-editor
+Addapted from: looma-less-plan.css
+Programmer name: Connor, SCU
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date:
-Revision: Looma 2.0.x
+Date: 7/26/17
+Version: Looma 3.0
 */
 
 html, body {margin:0;padding:0;height:100%;}
@@ -472,7 +472,7 @@ li:hover {
     float: right;*/
     /*border-radius:15px;*/
     vertical-align:top;
-    z-index: 0;
+    z-index: 1;
     margin: 0 1vh 1vh 0;
     box-shadow: 0px 0px 25px #C4C4C4;
 }
@@ -516,6 +516,7 @@ li:hover {
     position: absolute;
     bottom: 0;
     right: 0;
+    z-index: 2;
 }
 
 /************* Timeline module ***************/

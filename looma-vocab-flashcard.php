@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-Author: Sasha Cassidy and Lily Barnett
+Author: Sasha Cassidy, Lily Barnett, and Mahir Arora
 Description: Looma-vocab-flashcard.html is the flashcard code.
 	A card contains an English word on the front and the Nepali word, English definition,
 	and corresponding image on the back. The user can click the flashcard to flip it over
@@ -34,6 +34,10 @@ Description:  for Looma 2
                     <p class="largeWords" id="largeWordBack"> </p>
                     <p class="mediumWords" id="mediumWordBack"> </p>
                     <p class="smallWords" id="smallWordBack"> </p>
+                    <div id="rootWord">  </div>
+                    <div id ="rwNepali"> </div>
+                    <div id ="rwDefinition"></div>
+
                 </div>
         	</div>
 	  	</div>

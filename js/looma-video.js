@@ -17,31 +17,21 @@ Attribution: slightly borrowed from Matt West (blog.teamtreehouse.com)
 
    //var fullscreenPlayPauseButton;
 
-    function playVideo(vid)
-    { vid.play();
-        //playButton.style.backgroundImage = 'url("images/pause.png")';
-    };
-
-    function pauseVideo(vid)
-    { vid.pause();
-        //playButton.style.backgroundImage = 'url("images/video.png")';
-    }
-
 
 $(document).ready(function () {
+    //$('#gameArea').hide()
 
-    attachMediaControls();  //looma-media-controls.js adds eventlisteners to play/pause/volume/slider controls
-    attachFullscreenPlayPauseControl();
-    modifyFullscreenControl();
-    //fullscreenPlayPauseButton = document.getElementById("fullscreen-playpause");
+    $('#testButton').on('click', function(){
+        $('#gameArea').show();
+        startGame(["hi", "this", "is", "my", "test", "right"], "right");
+    });
 
-    // Video
-	//var video = document.getElementById("video");
-
-	//var fullscreenButton = document.getElementById("fullscreen-control");
-
-    //var editButton = document.getElementById("edit");
-    //var loginButton = document.getElementById("login");
-
-
+    document.getElementById('gameArea').addEventListener('won', function(){
+        $('#main-container-horizontal').css("background-color", "red");
+    })
 });
+
+function getNewWordsWithLastAsAnswer()
+{
+    return ["ih", "siht", "si", "ym", "tset", "thgir"];
+}

@@ -1,0 +1,28 @@
+#questions 
+{
+	height: 40%;
+	width: 100%;
+}
+
+#answers 
+{
+	height: 60%;
+	width: 100%;
+}
+
+#gamestart-button 
+{
+	height: 50%;
+    position: relative;
+    top: 25%;
+}
+
+#definition 
+{
+	font-size: 3em;
+}
+
+#scoreboard
+{
+	font-size: 48px;
+}

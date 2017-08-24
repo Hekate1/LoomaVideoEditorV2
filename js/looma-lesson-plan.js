@@ -221,6 +221,13 @@ function lessontemplatesave(name) {
   //
         makesortable(); //makes the timeline sortable
 
+        $('#timelineLeft').on('click', function(){
+          $('#timeline').animate({scrollLeft: '-=200px'}, 700);
+        });
+        $('#timelineRight').on('click', function(){
+          $('#timeline').animate({scrollLeft: '+=200px'}, 700);
+        });
+
 };  //end window.onload()
 
 var changeCollection = function() {

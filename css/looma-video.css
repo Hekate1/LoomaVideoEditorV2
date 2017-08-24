@@ -1,3 +1,14 @@
+/*
+LOOMA css file
+Filename: looma-video.css
+Description: Main css file for the looma video player, also used for looma-evi-player
+Associated code files:
+Programmer name: Maybe Skip, Connor
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 7/26/17
+Version: Looma 3.0
+*/
+
 .hidden {
     display: none;
 }
@@ -398,7 +409,6 @@ button#default-start-stop-time{
 }
 
 #image-overlay {
-    width: 100%;
     height: 100%;
 }
 

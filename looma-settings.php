@@ -127,6 +127,10 @@ Description:  for Looma 2
                 <a href="looma-speech-test.php">
                     <button id="speechtest" class="settings-control">Speech Test</button>
                 </a>
+
+                <a href="looma-word-game.php">
+                    <button id="wordgame" class="settings-control">Word Game</button>
+                </a>
             </div>
         </div>
 	</div>
